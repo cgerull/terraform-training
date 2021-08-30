@@ -9,16 +9,10 @@ terraform {
 
 # Configure the AWS Provider
 provider "aws" {
-  region = "eu-west-1"
+  region = var.aws_region
 }
 
 # Create a VPC
 resource "aws_vpc" "training" {
-  cidr_block = "10.0.0.0/16"
-}
-
-
-# Output
-output "vpc-arn" {
-  value = aws_vpc.training.arn
+  cidr_block = var.vpc_cidr_block
 }
