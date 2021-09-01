@@ -1,4 +1,4 @@
-# Output
-output vpc-arn {
-  value = aws_vpc.training.arn
+output ubuntu_public_ip {
+    description = "Assign public IP address"
+    value       = aws_instance.web_server.public_ip
 }
