@@ -16,3 +16,8 @@
 
 - Backend S3 configuration, optional
 - For training configuration keep using local state.
+- Created a `backend.hcl` configuration file. To use it remove all
+    parameters excep "key" from the backend configuration.
+    Whenever you need to run terraform init use this form:
+    ```bash terraform init -backend-config=backend.hcl```
+◊

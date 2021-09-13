@@ -1,11 +1,12 @@
 terraform {
-  # Sample backend configuration. Use ../terraform-state to create 
-  # S3 bucket and DynamoDB table backend 
+  # Sample backend configuration. 
+  # Use ../terraform-state to create the S3 bucket and DynamoDB table backend.backend.
+  # See README.md for more details.
   # 
   # backend "s3" {
   #   bucket = "cgerull-terraform-state"
   #   key    = "global/s3/terraform.tfstate"
-  #   region = var.aws_region
+  #   region = eu-west-1
 
   #   dynamodb_table = "cgerull-terraform-state"
   #   encrypt        = true
