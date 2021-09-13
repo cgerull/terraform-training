@@ -1,6 +1,25 @@
 # Configure the AWS Provider
+terraform {
+  # Chicken - egg catch.
+  # First run with backend config disabled to create the AWS resources.
+  backend "s3" {
+    bucket         = "cgerull-terraform-state"
+    region         = "eu-west-1"
+    dynamodb_table = "cgerull-terraform-state-locks"
+    encrypt        = true
+    key            = "global/s3/terraform.tfstate"
+  }
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.56"
+    }
+  }
+}
+
 provider "aws" {
-  region = var.aws_region
+  region = "eu-west-1"
 }
 
 resource "aws_s3_bucket" "terraform_state" {

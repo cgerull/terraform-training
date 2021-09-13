@@ -11,6 +11,10 @@ terraform {
   #   dynamodb_table = "cgerull-terraform-state"
   #   encrypt        = true
   # }
+  backend "s3" {
+    key    = "stage/services/webservices/terraform.tfstate"
+  }
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
