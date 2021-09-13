@@ -12,6 +12,8 @@
 - Simple t2.micro Ubuntu instanc with busybox web listner.
 - Local state.
 
+![Autoscaling group](docs/ch2_autoscaling.excalidraw.png "Autoscaling group")
+
 ### Chapter 3 Remote state and MySql
 
 - Backend S3 configuration, optional
@@ -20,4 +22,4 @@
     parameters excep "key" from the backend configuration.
     Whenever you need to run terraform init use this form:
     ```bash terraform init -backend-config=backend.hcl```
-◊
+- isolating state files per layout
