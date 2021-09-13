@@ -23,3 +23,8 @@
     Whenever you need to run terraform init use this form:
     ```bash terraform init -backend-config=backend.hcl```
 - isolating state files per layout
+- add RDS database
+- import user data
+
+![RDS database](docs/ch2_database.excalidraw.png "RDS database")
+
