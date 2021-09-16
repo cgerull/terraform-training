@@ -12,25 +12,22 @@ terraform {
   #   encrypt        = true
   # }
   backend "s3" {
-    key    = "stage/services/webservices/terraform.tfstate"
+    bucket   = var.db_remote_state_bucket
+    key = var.db_remote_state_key
+    region = eu-west-1
   }
 
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 3.56"
-    }
-  }
-}
-
-# Configure the AWS Provider
-provider "aws" {
-  region = var.aws_region
+  # required_providers {
+  #   aws = {
+  #     source  = "hashicorp/aws"
+  #     version = "~> 3.56"
+  #   }
+  # }
 }
 
 # Create security groups
 resource "aws_security_group" "sg_web_public" {
-  name = "public-web-access"
+  name = "${var.cluster_name}-web-access"
 
   ingress {
     from_port   = var.private_http_port
@@ -41,7 +38,7 @@ resource "aws_security_group" "sg_web_public" {
 }
 
 resource "aws_security_group" "sg_ssh_whitelist" {
-  name = "whitelisted-ssh-access"
+  name = "${var.cluster_name}-ssh-access"
 
   ingress {
     from_port   = var.ssh_port
@@ -52,7 +49,7 @@ resource "aws_security_group" "sg_ssh_whitelist" {
 }
 
 resource "aws_security_group" "alb" {
-  name = "terraform-training-alb"
+  name = "${var.cluster_name}-alb"
 
   # Allow inbound HTTP requests
   ingress {
@@ -73,7 +70,7 @@ resource "aws_security_group" "alb" {
 
 resource "aws_launch_configuration" "web_server" {
   image_id        = var.ubuntu_ami_amd64
-  instance_type   = "t2.micro"
+  instance_type   = var.instance_type
   security_groups = [aws_security_group.sg_web_public.id]
   # user_data       = data.template_file.user_data.rendered
   user_data = <<-EOF
@@ -95,18 +92,18 @@ resource "aws_autoscaling_group" "web_servers" {
 
   target_group_arns = [aws_lb_target_group.web_servers.arn]
   health_check_type = "ELB"
-  min_size          = 1
-  max_size          = 3
+  min_size          = var.min_size
+  max_size          = var.max_size
 
   tag {
-    key                 = "Name"
-    value               = "terraform-example"
+    key                 = "name"
+    value               =  var.cluster_name
     propagate_at_launch = true
   }
 }
 
 resource "aws_lb" "web_server" {
-  name               = "terraform-training-alb"
+  name               = "${var.cluster_name}-alb"
   load_balancer_type = "application"
   subnets            = data.aws_subnet_ids.default.ids
   security_groups    = [aws_security_group.alb.id]
@@ -129,7 +126,7 @@ resource "aws_lb_listener" "http" {
 }
 
 resource "aws_lb_target_group" "web_servers" {
-  name     = "terraform-training-asg"
+  name     = "${var.cluster_name}-asg"
   port     = var.server_http_port
   protocol = "HTTP"
   vpc_id   = data.aws_vpc.default.id
