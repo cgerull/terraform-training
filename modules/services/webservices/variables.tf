@@ -1,3 +1,11 @@
+locals {
+  http_port    = 80
+  any_port     = 0
+  any_protocol = "-1"
+  tcp_protocol = "tcp"
+  all_ips      = ["0.0.0.0/0"]
+}
+
 variable "aws_region" {
   description = "AWS region name."
   type        = string
@@ -6,6 +14,16 @@ variable "aws_region" {
 
 variable "cluster_name" {
   description = "The name to use for all the cluster resources"
+  type        = string
+}
+
+variable "webserver_cluster_remote_state_bucket" {
+  description = "The name of the S3 bucket for this modules remote state"
+  type        = string
+}
+
+variable "webserver_cluster_remote_state_key" {
+  description = "The path for the this modules remote state in S3"
   type        = string
 }
 
